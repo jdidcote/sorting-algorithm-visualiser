@@ -1,4 +1,4 @@
-# Sorted
+# Sorter
 
 A tool for visualising sorting algorithms in Python using tkinter.
 
