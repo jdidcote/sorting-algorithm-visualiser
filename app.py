@@ -1,4 +1,3 @@
-import random
 from time import sleep
 from typing import List
 
@@ -7,96 +6,87 @@ from tkinter import ttk
 
 from sorters.base import BaseSorter
 from sorters.bubble_sort import BubbleSorter
+from utils import create_unsorted, matching_elements
 
-root = Tk()
-root.title("Sorting Visualisation")
-root.geometry('1200x800+50+50')
+class App(Tk):
+    def __init__(self, l: List[int]):
+        super().__init__()
 
-# Frame for user inputs
-input_frame = Frame(root)
-input_frame.grid(row=0, column=0, padx=0, pady=5)
+        self.title("Sorting Visualisation")
+        self.geometry('1200x800+50+50')
 
-# Canvas for visulisation
-canvas = Canvas(root, width=1100, height=700, bg="white")
-canvas.grid(row=1, column=0, padx=50, pady=20)
+        # Frame for user inputs
+        self.input_frame = Frame(self)
+        self.input_frame.grid(row=0, column=0, padx=0, pady=5)
 
-# Add input label
-Label(input_frame, text="Algorithm: ").grid(
-    row=0, column=0
-)
+        # Canvas for visualisation
+        self.canvas = Canvas(self, width=1100, height=700, bg="white")
+        self.canvas.grid(row=1, column=0, padx=50, pady=20)
 
-# Sorting algo buttons
-bsort_button = Button(input_frame, text="Bubble sort", command=print(3))
-bsort_button.grid(row=0, column=1)
-
-def display_list(l: List[int], colors: List[str]):
-    
-    # Clear the canvas
-    canvas.delete("all")
-
-    canvas_height = 700
-    canvas_width = 1100
-
-    bar_width = canvas_width  * 0.95 / len(l) + 1
-    spacing = 0
-
-    # MinMax scale
-    minmax_l = [x / max(l) for x in l]
-
-    for i, height in enumerate(minmax_l):
-
-        canvas.create_rectangle(
-            i * bar_width + spacing, 
-            canvas_height, 
-            ((i + 1) * bar_width), 
-            canvas_height - (height * canvas_height), 
-            fill=colors[i]
+        # Add input label
+        Label(self.input_frame, text="Algorithm: ").grid(
+            row=0, column=0
         )
-    root.update()
 
-def create_unsorted(n_elements: int) -> List[int]:
-    """Creates unsorted array of unique integers
+        # Sorting algo buttons
+        self.bsort_button = Button(
+            self.input_frame,
+            text="Bubble sort", 
+            command=lambda: self.run_sorter(BubbleSorter, l)
+        )
+        self.bsort_button.grid(row=0, column=1)
 
-    Args:
-        n_elements (int): length of array to be created
+    def display_list(
+        self, 
+        l: List[int], 
+        colors: List[str]
+    ):
+        # Clear the canvas
+        self.canvas.delete("all")
 
-    Returns:
-        List[int]: unsorted list
-    """
-    unsorted = list(range(n_elements))
-    random.shuffle(unsorted)
-    return unsorted
+        canvas_height = 700
+        canvas_width = 1100
 
-def matching_elements(l1: list, l2: list) -> list:
-    """Return the elements of l1 and l2 which are in the same position
-    """
-    return [x for x, i in enumerate(l1) if i == l2[x]]
+        bar_width = canvas_width  * 0.95 / len(l) + 1
+        spacing = 0
 
-def run_sorter(Sorter: BaseSorter, l: List[int]):
-    sorter = Sorter(l)
-    sort_generator = sorter.sort()
+        # MinMax scale
+        minmax_l = [x / max(l) for x in l]
 
-    while not sorter.is_sorted:
-        cur_iter = next(sort_generator)
-        l = cur_iter.l
+        for i, height in enumerate(minmax_l):
 
-        colors = ["grey" for _ in range(len(sorter.l))]
-        if len(cur_iter.swaps) > 0:
-            for swap_index in cur_iter.swaps:
-                # Make swapped elements red
-                colors[swap_index] = "red"
-        
-        for matching in matching_elements(l, sorted(l)):
-            colors[matching] = "green"
+            self.canvas.create_rectangle(
+                i * bar_width + spacing, 
+                canvas_height, 
+                ((i + 1) * bar_width), 
+                canvas_height - (height * canvas_height), 
+                fill=colors[i]
+            )
+        self.update()
+    
+    def run_sorter(self, Sorter: BaseSorter, l: List[int]):
+        sorter = Sorter(l)
+        sort_generator = sorter.sort()
 
-        # Make currently accessed element blue
-        colors[cur_iter.index] = "blue"
-        display_list(l, colors=colors)
+        while not sorter.is_sorted:
+            cur_iter = next(sort_generator)
+            l = cur_iter.l
 
-        sleep(0.05)
+            colors = ["grey" for _ in range(len(sorter.l))]
+            if len(cur_iter.swaps) > 0:
+                for swap_index in cur_iter.swaps:
+                    # Make swapped elements red
+                    colors[swap_index] = "red"
+            
+            for matching in matching_elements(l, sorted(l)):
+                colors[matching] = "green"
 
+            # Make currently accessed element blue
+            colors[cur_iter.index] = "blue"
+            self.display_list(l, colors=colors)
 
-run_sorter(BubbleSorter, create_unsorted(30))
+            sleep(0.01)
 
-# keep the window displaying
-root.mainloop()
+if __name__ == "__main__":
+    app = App(create_unsorted(50))
+    app.mainloop()
