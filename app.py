@@ -1,5 +1,5 @@
 import random
-import tkinter
+from time import sleep
 from typing import List
 
 from tkinter import *
@@ -37,8 +37,8 @@ def display_list(l: List[int], colors: List[str]):
     canvas_height = 700
     canvas_width = 1100
 
-    bar_width = canvas_width / len(l) + 1
-    spacing = 1
+    bar_width = canvas_width  * 0.95 / len(l) + 1
+    spacing = 0
 
     # MinMax scale
     minmax_l = [x / max(l) for x in l]
@@ -47,9 +47,9 @@ def display_list(l: List[int], colors: List[str]):
 
         canvas.create_rectangle(
             i * bar_width + spacing, 
-            canvas_height - (height * canvas_height), 
-            ((i + 1) * bar_width), 
             canvas_height, 
+            ((i + 1) * bar_width), 
+            canvas_height - (height * canvas_height), 
             fill=colors[i]
         )
     root.update()
@@ -67,23 +67,36 @@ def create_unsorted(n_elements: int) -> List[int]:
     random.shuffle(unsorted)
     return unsorted
 
-def run_sorter(sorter: BaseSorter, l: List[int]):
-    sorter = sorter(l)
-    sorter.sort()
+def matching_elements(l1: list, l2: list) -> list:
+    """Return the elements of l1 and l2 which are in the same position
+    """
+    return [x for x, i in enumerate(l1) if i == l2[x]]
 
-    def _get_colors(i0, i1):
+def run_sorter(Sorter: BaseSorter, l: List[int]):
+    sorter = Sorter(l)
+    sort_generator = sorter.sort()
+
+    while not sorter.is_sorted:
+        cur_iter = next(sort_generator)
+        l = cur_iter.l
+
         colors = ["grey" for _ in range(len(sorter.l))]
-        colors[i0] = "red"
-        colors[i1] = "green"
-        return colors
+        if len(cur_iter.swaps) > 0:
+            for swap_index in cur_iter.swaps:
+                # Make swapped elements red
+                colors[swap_index] = "red"
+        
+        for matching in matching_elements(l, sorted(l)):
+            colors[matching] = "green"
 
-    for i0, i1 in sorter.swap_history:
-        print(i0, i1)
-        l[i0], l[i1] = l[i1], l[i0]
-        colors = _get_colors(i0, i1)
+        # Make currently accessed element blue
+        colors[cur_iter.index] = "blue"
         display_list(l, colors=colors)
 
-run_sorter(BubbleSorter, create_unsorted(100))
+        sleep(0.05)
+
+
+run_sorter(BubbleSorter, create_unsorted(30))
 
 # keep the window displaying
 root.mainloop()

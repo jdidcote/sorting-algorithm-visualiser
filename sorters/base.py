@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import List
 
+from data_model.sort_iteration import SortIter
+
 class BaseSorter(ABC):
     def __init__(self, l: List[int]):
         """Base sorting algorithm which all other sorting classes must inherit
@@ -19,7 +21,7 @@ class BaseSorter(ABC):
         return all([self.l[i] <= self.l[i + 1] for i in range(len(self) - 1)])
 
     @abstractmethod
-    def sort(self):
+    def sort(self) -> SortIter:
         """Sort the unordered list and save any changes
         """
         pass
@@ -33,7 +35,6 @@ class BaseSorter(ABC):
         """
         self.swaps += 1
         self.swap_history.append((i0, i1))
-
         self.l[i0], self.l[i1] = self.l[i1], self.l[i0]
 
     def reset(self):
