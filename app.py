@@ -12,6 +12,10 @@ class App(Tk):
     def __init__(self):
         super().__init__()
 
+        self.setup_app()
+        self.sort_selector()
+
+    def setup_app(self):
         self.title("Sorting Visualisation")
         self.geometry('1200x800+50+50')
 
@@ -27,9 +31,9 @@ class App(Tk):
         Label(self.input_frame, text="Algorithm: ").grid(
             row=0, column=0
         )
-
         self.set_graph()
 
+    def sort_selector(self):
         sort_options = {
             "Bubble Sort": BubbleSorter
         }
