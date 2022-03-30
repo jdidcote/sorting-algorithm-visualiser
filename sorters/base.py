@@ -20,8 +20,7 @@ class BaseSorter(ABC):
 
     @abstractmethod
     def sort(self):
-        """Move forward one iteration in the sorting algorithm and returns
-           the indices of the changed values.
+        """Sort the unordered list and save any changes
         """
         pass
 
