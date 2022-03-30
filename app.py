@@ -9,7 +9,7 @@ from sorters.bubble_sort import BubbleSorter
 from utils import create_unsorted, matching_elements
 
 class App(Tk):
-    def __init__(self, l: List[int]):
+    def __init__(self):
         super().__init__()
 
         self.title("Sorting Visualisation")
@@ -28,13 +28,29 @@ class App(Tk):
             row=0, column=0
         )
 
-        # Sorting algo buttons
-        self.bsort_button = Button(
+        self.set_graph()
+
+        sort_options = {
+            "Bubble Sort": BubbleSorter
+        }
+        
+        def _sort_func(option):
+            self.run_sorter(sort_options[option], self.l)
+
+        var = StringVar()
+        var.set('Bubble sort')
+        OptionMenu(self.input_frame, var, *sort_options, command=_sort_func).grid(row=0, column=1)
+
+        # Reset button
+        Button(
             self.input_frame,
-            text="Bubble sort", 
-            command=lambda: self.run_sorter(BubbleSorter, l)
-        )
-        self.bsort_button.grid(row=0, column=1)
+            text="Reset",
+            command=self.set_graph,
+        ).grid(row=0, column=2)
+
+    def set_graph(self):
+        self.l = create_unsorted(50)
+        self.display_list(self.l, ["grey" for _ in range(len(self.l))])
 
     def display_list(
         self, 
@@ -85,8 +101,8 @@ class App(Tk):
             colors[cur_iter.index] = "blue"
             self.display_list(l, colors=colors)
 
-            sleep(0.01)
+            # sleep(0.002)
 
 if __name__ == "__main__":
-    app = App(create_unsorted(50))
+    app = App()
     app.mainloop()
