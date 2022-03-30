@@ -8,7 +8,7 @@ class BaseSorter(ABC):
         Args:
             l (List[int]): unsorted list of integers
         """
-        self.l_orig = l
+        self.l_orig = l[:]
         self.reset()
 
     def __len__(self):
@@ -19,20 +19,28 @@ class BaseSorter(ABC):
         return all([self.l[i] <= self.l[i + 1] for i in range(len(self) - 1)])
 
     @abstractmethod
-    def step(self):
+    def sort(self):
         """Move forward one iteration in the sorting algorithm and returns
            the indices of the changed values.
         """
         pass
 
-    def update(self):
-        """Update iterations
+    def swap(self, i0: int, i1: int):
+        """Swap two array elements and add to swaps history
+
+        Args:
+            i0 (int): index of first element
+            i1 (int): index of second element
         """
-        self.iterations += 1
+        self.swaps += 1
+        self.swap_history.append((i0, i1))
+
+        self.l[i0], self.l[i1] = self.l[i1], self.l[i0]
 
     def reset(self):
         """Reset the objects state
         """
-        self.l = self.l_orig
+        self.l = self.l_orig[:]
         self.iterations = 0
-        
+        self.swaps = 0
+        self.swap_history = []

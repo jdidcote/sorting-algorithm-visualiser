@@ -1,6 +1,6 @@
 # Sorted
 
-A tool for visualising sorting algorithms in Python using Django.
+A tool for visualising sorting algorithms in Python using tkinter.
 
 ## Setup
 
