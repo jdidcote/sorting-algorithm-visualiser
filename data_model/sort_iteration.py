@@ -3,8 +3,8 @@ from typing import List
 
 @dataclass 
 class SortIter:
-    """Class for storing data from iterations of sorting algorithm
+    """Class for storing data from a single iteration of a sorting algorithm
     """
     l: List[int]
-    index: int
-    swaps: List[int]
+    index: List[int]
+    changes: List[int]

@@ -6,6 +6,7 @@ from tkinter import ttk
 
 from sorters.base import BaseSorter
 from sorters.bubble_sort import BubbleSorter
+from sorters.merge_sort import MergeSorter
 from utils import create_unsorted, matching_elements
 
 class App(Tk):
@@ -35,14 +36,15 @@ class App(Tk):
 
     def sort_selector(self):
         sort_options = {
-            "Bubble Sort": BubbleSorter
+            "Bubble Sort": BubbleSorter,
+            "Merge Sort": MergeSorter
         }
         
         def _sort_func(option):
             self.run_sorter(sort_options[option], self.l)
 
         var = StringVar()
-        var.set('Bubble sort')
+        var.set('Select sorter')
         OptionMenu(self.input_frame, var, *sort_options, command=_sort_func).grid(row=0, column=1)
 
         # Reset button
@@ -88,24 +90,35 @@ class App(Tk):
         sorter = Sorter(l)
         sort_generator = sorter.sort()
 
-        while not sorter.is_sorted:
-            cur_iter = next(sort_generator)
-            l = cur_iter.l
+        # while not sorter.is_sorted:
 
-            colors = ["grey" for _ in range(len(sorter.l))]
-            if len(cur_iter.swaps) > 0:
-                for swap_index in cur_iter.swaps:
-                    # Make swapped elements red
-                    colors[swap_index] = "red"
+        try:
+            while True:
+                cur_iter = next(sort_generator)
+                l = cur_iter.l
+
+                colors = ["grey" for _ in range(len(sorter.l))]
+                if len(cur_iter.changes) > 0:
+                    for change_index in cur_iter.changes:
+                        # Make changed elements red
+                        colors[change_index] = "red"
+                
+                for matching in matching_elements(l, sorted(l)):
+                    colors[matching] = "green"
+
+                # Make currently accessed element blue
+                for idx in cur_iter.index:
+                    if idx is not None:
+                        colors[idx] = "blue"
+
+                self.display_list(l, colors=colors)
+
+                sleep(0.01)
+        except StopIteration:
+            pass
+        
             
-            for matching in matching_elements(l, sorted(l)):
-                colors[matching] = "green"
-
-            # Make currently accessed element blue
-            colors[cur_iter.index] = "blue"
-            self.display_list(l, colors=colors)
-
-            # sleep(0.002)
+            
 
 if __name__ == "__main__":
     app = App()

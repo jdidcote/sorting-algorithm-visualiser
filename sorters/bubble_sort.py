@@ -14,4 +14,4 @@ class BubbleSorter(BaseSorter):
                 if self.l[i] > self.l[i + 1]:
                     self.swap(i, i + 1)
                     swaps = [i, i + 1]
-                yield SortIter(self.l, i, swaps)
+                yield SortIter(self.l, [i], swaps)

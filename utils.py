@@ -18,4 +18,9 @@ def create_unsorted(n_elements: int) -> List[int]:
 def matching_elements(l1: list, l2: list) -> list:
     """Return the elements of l1 and l2 which are in the same position
     """
-    return [x for x, i in enumerate(l1) if i == l2[x]]
+    return [i for x, i in enumerate(l1) if i == l2[x]]
+
+def non_matching_elements(l1: list, l2: list) -> list:
+    """Return the elements of l1 and l2 which are NOT in the same position
+    """
+    return [x for x, i in enumerate(l1) if i != l2[x]]
