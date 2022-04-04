@@ -7,6 +7,7 @@ from tkinter import ttk
 from sorters.base import BaseSorter
 from sorters.bubble_sort import BubbleSorter
 from sorters.merge_sort import MergeSorter
+from sorters.selection_sort import SelectionSorter
 from utils import create_unsorted, matching_elements
 
 class App(Tk):
@@ -37,6 +38,7 @@ class App(Tk):
     def sort_selector(self):
         sort_options = {
             "Bubble Sort": BubbleSorter,
+            "Selection Sort": SelectionSorter,
             "Merge Sort": MergeSorter
         }
         
@@ -90,8 +92,6 @@ class App(Tk):
         sorter = Sorter(l)
         sort_generator = sorter.sort()
 
-        # while not sorter.is_sorted:
-
         try:
             while True:
                 cur_iter = next(sort_generator)
@@ -113,12 +113,9 @@ class App(Tk):
 
                 self.display_list(l, colors=colors)
 
-                sleep(0.01)
+                sleep(0.05)
         except StopIteration:
             pass
-        
-            
-            
 
 if __name__ == "__main__":
     app = App()
