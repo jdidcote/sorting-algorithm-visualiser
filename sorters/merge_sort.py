@@ -25,7 +25,7 @@ class MergeSorter(BaseSorter):
             List[int]: sorted list
         """
 
-        if len(l) == 1:
+        if len(l) < 2:
             return l
 
         # Find the mid-point of the array
