@@ -1,4 +1,4 @@
-# Sorter
+# Sorting algorithm visualiser
 
 A tool for visualising sorting algorithms in Python using tkinter.
 
